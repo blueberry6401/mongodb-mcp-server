@@ -270,6 +270,7 @@ The MongoDB MCP Server can be configured using multiple methods, with the follow
 | `disabledTools`    | An array of tool names, operation types, and/or categories of tools that will be disabled.                                                                    |
 | `readOnly`         | When set to true, only allows read and metadata operation types, disabling create/update/delete operations.                                                   |
 | `indexCheck`       | When set to true, enforces that query operations must use an index, rejecting queries that perform a collection scan.                                         |
+| `allowDiskUse`     | When set to true, allows MongoDB aggregation operations to use temporary disk storage when they exceed the 100MB memory limit.                                |
 | `telemetry`        | When set to disabled, disables telemetry collection.                                                                                                          |
 
 #### Log Path
@@ -327,6 +328,20 @@ You can enable index check mode using:
 - **Command-line argument**: `--indexCheck`
 
 When index check mode is active, you'll see an error message if a query is rejected due to not using an index.
+
+#### Allow Disk Use Mode
+
+The `allowDiskUse` configuration option allows MongoDB aggregation operations to use temporary disk storage when they exceed the 100MB memory limit. This is useful for large aggregation operations that would otherwise fail with an error.
+
+You can enable allow disk use mode using:
+
+- **Environment variable**: `export MDB_MCP_ALLOW_DISK_USE=true`
+- **Command-line argument**: `--allowDiskUse`
+
+When enabled, this option applies to:
+- Aggregation operations (`aggregate` tool)
+- Aggregation explain plans (`explain` tool)
+- Collection storage size calculations (`collection-storage-size` tool)
 
 #### Telemetry
 
@@ -404,6 +419,9 @@ export MDB_MCP_CONNECTION_STRING="mongodb+srv://username:password@cluster.mongod
 
 export MDB_MCP_LOG_PATH="/path/to/logs"
 
+# Enable disk use for aggregation operations
+export MDB_MCP_ALLOW_DISK_USE="true"
+
 ```
 
 #### MCP configuration file examples
@@ -446,7 +464,7 @@ export MDB_MCP_LOG_PATH="/path/to/logs"
 Pass configuration options as command-line arguments when starting the server:
 
 ```shell
-npx -y mongodb-mcp-server --apiClientId="your-atlas-service-accounts-client-id" --apiClientSecret="your-atlas-service-accounts-client-secret" --connectionString="mongodb+srv://username:password@cluster.mongodb.net/myDatabase" --logPath=/path/to/logs --readOnly --indexCheck
+npx -y mongodb-mcp-server --apiClientId="your-atlas-service-accounts-client-id" --apiClientSecret="your-atlas-service-accounts-client-secret" --connectionString="mongodb+srv://username:password@cluster.mongodb.net/myDatabase" --logPath=/path/to/logs --readOnly --indexCheck --allowDiskUse
 ```
 
 #### MCP configuration file examples
