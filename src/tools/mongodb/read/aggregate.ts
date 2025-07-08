@@ -29,12 +29,20 @@ export class AggregateTool extends MongoDBToolBase {
         if (this.config.indexCheck) {
             await checkIndexUsage(provider, database, collection, "aggregate", async () => {
                 return provider
-                    .aggregate(database, collection, pipeline, {}, { writeConcern: undefined })
+                    .aggregate(
+                        database,
+                        collection,
+                        pipeline,
+                        { allowDiskUse: this.config.allowDiskUse },
+                        { writeConcern: undefined }
+                    )
                     .explain("queryPlanner");
             });
         }
 
-        const documents = await provider.aggregate(database, collection, pipeline).toArray();
+        const documents = await provider
+            .aggregate(database, collection, pipeline, { allowDiskUse: this.config.allowDiskUse })
+            .toArray();
 
         const content: Array<{ text: string; type: "text" }> = [
             {

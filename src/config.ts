@@ -24,6 +24,7 @@ export interface UserConfig {
     disabledTools: Array<string>;
     readOnly?: boolean;
     indexCheck?: boolean;
+    allowDiskUse?: boolean;
 }
 
 const defaults: UserConfig = {
@@ -39,6 +40,7 @@ const defaults: UserConfig = {
     telemetry: "enabled",
     readOnly: false,
     indexCheck: false,
+    allowDiskUse: false,
 };
 
 export const config = {

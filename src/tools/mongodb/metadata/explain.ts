@@ -59,7 +59,7 @@ export class ExplainTool extends MongoDBToolBase {
                         database,
                         collection,
                         pipeline,
-                        {},
+                        { allowDiskUse: this.config.allowDiskUse },
                         {
                             writeConcern: undefined,
                         }

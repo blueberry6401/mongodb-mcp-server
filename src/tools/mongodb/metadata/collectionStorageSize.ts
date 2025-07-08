@@ -12,10 +12,15 @@ export class CollectionStorageSizeTool extends MongoDBToolBase {
     protected async execute({ database, collection }: ToolArgs<typeof DbOperationArgs>): Promise<CallToolResult> {
         const provider = await this.ensureConnected();
         const [{ value }] = (await provider
-            .aggregate(database, collection, [
-                { $collStats: { storageStats: {} } },
-                { $group: { _id: null, value: { $sum: "$storageStats.size" } } },
-            ])
+            .aggregate(
+                database,
+                collection,
+                [
+                    { $collStats: { storageStats: {} } },
+                    { $group: { _id: null, value: { $sum: "$storageStats.size" } } },
+                ],
+                { allowDiskUse: this.config.allowDiskUse }
+            )
             .toArray()) as [{ value: number }];
 
         const { units, value: scaledValue } = CollectionStorageSizeTool.getStats(value);
